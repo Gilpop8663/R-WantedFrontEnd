@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 
 const Animation = keyframes`
@@ -14,10 +14,9 @@ const Animation = keyframes`
 const Wrapper = styled.div`
   margin: 30px 0px;
   display: flex;
-  justify-content: center;
-  width: 100vw;
   overflow-x: hidden;
-  animation: ${Animation} 5s ease-in-out;
+
+  align-items: center;
 `;
 
 const Container = styled.div`
@@ -25,30 +24,34 @@ const Container = styled.div`
   border-radius: 7px;
   display: flex;
   align-items: center;
-  animation: ${Animation} 5s ease-in-out;
+  margin: 0 12.5px;
 `;
 
 const Row = styled.div`
+  width: 100vw;
   display: flex;
   align-items: center;
-  animation: ${Animation} 5s ease-in-out;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
 `;
 
 const Img = styled.img`
   border-radius: 7px;
   margin: 0;
   animation: ${Animation} 5s ease-in-out;
+  margin: 0 12.5px;
+  position: relative;
+  transition: all 1s linear;
 `;
 const PrivewImg = styled.img`
-  transition: ease-in-out 5s;
+  transition: all 1s linear;
   border-radius: 7px;
-  opacity: 0.5;
 `;
 
 const Button = styled.button`
   display: flex;
   align-items: center;
-  position: relative;
+  position: absolute;
   border: none;
   font-size: 12px;
   height: 50px;
@@ -62,51 +65,163 @@ const Button = styled.button`
 `;
 
 const LeftButton = styled(Button)`
-  right: 50px;
+  left: 18.5%;
 `;
 
 const RightButton = styled(Button)`
-  left: 50px;
+  right: 18.5%;
+`;
+
+const ImgWrapper = styled.div`
+  position: relative;
+`;
+const ImgDes = styled.div`
+  position: absolute;
+  z-index: 5;
+  width: 330px;
+  height: 150px;
+  border-radius: 5px;
+  background-color: white;
+  left: 30px;
+  bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 27px 0px 20px 0px;
+`;
+
+const Title = styled.span`
+  padding-left: 20px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 14px;
+`;
+const Des = styled.span`
+  padding-left: 20px;
+  padding-bottom: 24px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const WantedImg = [
   "https://static.wanted.co.kr/images/banners/1489/312a0c29.jpg",
   "https://static.wanted.co.kr/images/banners/1486/fba2df30.jpg",
-  "https://static.wanted.co.kr/images/banners/1488/baa54448.jpg",
-  "https://static.wanted.co.kr/images/banners/1490/0b775035.jpg",
-  "https://static.wanted.co.kr/images/banners/1460/619f3af7.jpg",
   "https://static.wanted.co.kr/images/banners/1468/3df61cbc.jpg",
+  "https://static.wanted.co.kr/images/banners/1490/0b775035.jpg",
   "https://static.wanted.co.kr/images/banners/1484/b2853456.jpg",
+  "https://static.wanted.co.kr/images/banners/1460/619f3af7.jpg",
+  "https://static.wanted.co.kr/images/banners/1473/41f7b36e.jpg",
   "https://static.wanted.co.kr/images/banners/1487/0d36f0b5.jpg",
+  "https://static.wanted.co.kr/images/banners/1488/baa54448.jpg",
+];
+
+const wantedTitle = [
+  "22년 달라지는 노동법령",
+  "성과를 내는 마케팅",
+  "해, 커리어 EP 02 공개",
+  "마케팅 주니어를 찾습니다",
+  "성장하는 개발자가 되려면?",
+  "개발자 성장 비결 공개!",
+  "개발자 되고 싶은 분들!?",
+  "포트폴리오를 부탁해!",
+  "UX 디자이너의 커리어 설계",
+];
+
+const wantedDes = [
+  "노무관리 쟁점 한 눈에 파악하기",
+  "실제 사례를 공개합니다!",
+  "마지막 관문 2라운드의 승자는?",
+  "기업 과제 풀고 취업까지 한번에!",
+  "OOO 검색하지 말 것!",
+  "Velog, 글 쓰는 개발자들의 이야기",
+  "프론트엔드 무료 교육과정 참여하기",
+  "디자이너의 포폴 살펴보기",
+  "디자이너의 포폴 살펴보기",
 ];
 
 function Slider() {
   const [index, setIndex] = useState(0);
-  const increaseClick = () => {
-    setIndex((prev) => (prev === 7 ? 0 : prev + 1));
+  const [isSlide, setIsSlide] = useState(false);
+  const [x, setX] = useState(0);
+  const slideRef = useRef(null);
+  const increaseClick = async () => {
+    if (isSlide) {
+      return;
+    }
+    setX(-56);
+    setIsSlide(true);
+    await setTimeout(() => {
+      setIndex((prev) => (prev === 8 ? 0 : prev + 1));
+      setX(0);
+      setIsSlide(false);
+    }, 500);
+    //setIndex((prev) => (prev === 7 ? 0 : prev + 1));
   };
-  const decreaseClick = () => {
-    setIndex((prev) => (prev === 0 ? 7 : prev - 1));
+  const decreaseClick = async () => {
+    if (isSlide) {
+      return;
+    }
+    setX(+56);
+    setIsSlide(true);
+    setTimeout(() => {
+      setIndex((prev) => (prev === 0 ? 8 : prev - 1));
+      setX(0);
+      setIsSlide(false);
+    }, 500);
   };
-  const PrevImg = index === 0 ? 7 : index - 1;
-  const NextImg = index === 7 ? 0 : index + 1;
+  const morePrevImg = index === 1 ? 8 : index === 0 ? 7 : index - 2;
+  const PrevImg = index === 0 ? 8 : index - 1;
+  const NextImg = index === 8 ? 0 : index + 1;
+  const moreNextImg = index === 8 ? 1 : index === 7 ? 0 : index + 2;
+  //console.log(slideRef.current);
+  //console.log(index);
   return (
     <Wrapper>
-      <Row key={index}>
+      <Row
+        key={index}
+        ref={slideRef}
+        style={{ transform: `translateX(${x}vw)` }}
+      >
         <Container>
-          <PrivewImg id={index - 1} src={WantedImg[PrevImg]}></PrivewImg>
+          <PrivewImg
+            style={{ opacity: 0.5 }}
+            src={WantedImg[morePrevImg]}
+          ></PrivewImg>
         </Container>
-        <LeftButton onClick={decreaseClick}>
-          <i class="fas fa-chevron-left"></i>
-        </LeftButton>
-        <Img id={index} src={WantedImg[index]}></Img>
-        <RightButton onClick={increaseClick}>
-          <i class="fas fa-chevron-right"></i>
-        </RightButton>
         <Container>
-          <PrivewImg id={index + 1} src={WantedImg[NextImg]}></PrivewImg>
+          <PrivewImg
+            style={{ opacity: 0.5 }}
+            src={WantedImg[PrevImg]}
+          ></PrivewImg>
+        </Container>
+        <ImgWrapper>
+          <Img style={{ opacity: 1 }} src={WantedImg[index]} />
+          {!isSlide ? (
+            <ImgDes>
+              <Title>{wantedTitle[index]}</Title>
+              <Des>{wantedDes[index]}</Des>
+            </ImgDes>
+          ) : null}
+        </ImgWrapper>
+        <Container>
+          <PrivewImg
+            style={{ opacity: 0.5 }}
+            src={WantedImg[NextImg]}
+          ></PrivewImg>
+        </Container>
+        <Container>
+          <PrivewImg
+            style={{ opacity: 0.5 }}
+            src={WantedImg[moreNextImg]}
+          ></PrivewImg>
         </Container>
       </Row>
+      <LeftButton onClick={decreaseClick}>
+        <i class="fas fa-chevron-left"></i>
+      </LeftButton>
+      <RightButton onClick={increaseClick}>
+        <i class="fas fa-chevron-right"></i>
+      </RightButton>
     </Wrapper>
   );
 }
