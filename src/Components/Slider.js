@@ -1,18 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-
-const Animation = keyframes`
-0%{
-  opacity: 1;
-  left:0
-}100%{
-  opacity:1;
-  x:20%
-}
-`;
+import styled from "styled-components";
 
 const Wrapper = styled.div`
-  margin: 30px 0px;
+  margin: 22px 0px;
   display: flex;
   overflow-x: hidden;
 
@@ -26,12 +16,13 @@ const Container = styled.div`
   align-items: center;
   margin: 0 12.5px;
   cursor: pointer;
+  position: relative;
 `;
 
 const Row = styled.div`
   width: 100vw;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   transition: all 0.5s ease-in-out;
 `;
@@ -39,11 +30,10 @@ const Row = styled.div`
 const Img = styled.img`
   border-radius: 7px;
   margin: 0;
-  animation: ${Animation} 5s ease-in-out;
   margin: 0 12.5px;
   position: relative;
   cursor: pointer;
-  transition: all 1s linear;
+  transition: all 0.5s linear;
 `;
 const PrivewImg = styled.img`
   transition: all 1s linear;
@@ -55,6 +45,7 @@ const Button = styled.button`
   cursor: pointer;
   align-items: center;
   position: absolute;
+  justify-content: center;
   border: none;
   font-size: 12px;
   height: 50px;
@@ -68,11 +59,11 @@ const Button = styled.button`
 `;
 
 const LeftButton = styled(Button)`
-  left: 18.5%;
+  transition: all 0.5s ease-in-out;
 `;
 
 const RightButton = styled(Button)`
-  right: 18.5%;
+  transition: all 0.5s ease-in-out;
 `;
 
 const ImgWrapper = styled.div`
@@ -120,6 +111,25 @@ const LinkSpan = styled.span`
   }
 `;
 
+const MiniWrapper = styled.div`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.1s ease-in-out;
+`;
+
+const MiniTitle = styled.span`
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 22px;
+  margin-bottom: 10px;
+`;
+
+const MiniDes = styled.span`
+  font-size: 14px;
+`;
+
 const WantedImg = [
   "https://static.wanted.co.kr/images/banners/1489/312a0c29.jpg",
   "https://static.wanted.co.kr/images/banners/1486/fba2df30.jpg",
@@ -156,21 +166,21 @@ const wantedDes = [
   "브랜드 가치를 더하는 디자인",
 ];
 
-const delay = 2500;
-
 function Slider() {
   const [index, setIndex] = useState(0);
   const [isSlide, setIsSlide] = useState(false);
   const [auto, setAuto] = useState(0);
   const [isClick, setIsClick] = useState(false);
-  const [mouseX, setMouseX] = useState(0);
+  const [mouseDownClientX, setMouseDownClientX] = useState(0);
+  const [mouseUpClientX, setMouseUpClientX] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [x, setX] = useState(0);
   const slideRef = useRef(null);
+
   const increaseClick = async () => {
     if (isSlide) {
       return;
     }
-    clearTimeout(autoPage);
     setX(-56);
     setIsSlide(true);
     await setTimeout(() => {
@@ -184,7 +194,6 @@ function Slider() {
     if (isSlide) {
       return;
     }
-    clearTimeout(autoPage);
     setX(+56);
     setIsSlide(true);
     await setTimeout(() => {
@@ -200,8 +209,46 @@ function Slider() {
   //console.log(slideRef.current);
   //console.log(index);
 
-  const autoPage = () => {
-    setTimeout(() => {
+  const onMouseDown = (event) => {
+    setIsClick(true);
+    setMouseDownClientX(event.pageX);
+    console.log(slideRef);
+  };
+  const onMouseLeave = (event) => {
+    setIsClick(false);
+  };
+  const onMouseUp = (event) => {
+    setIsClick(false);
+    const imgX = mouseDownClientX - mouseUpClientX;
+    console.log(imgX);
+    if (imgX < -200) {
+      increaseClick();
+    } else if (imgX > 200) {
+      decreaseClick();
+    }
+  };
+  const onMouseMove = (event) => {
+    if (!isClick) return;
+    event.preventDefault();
+    setMouseUpClientX(event.pageX);
+    const imgX = mouseDownClientX - mouseUpClientX;
+    if (Math.abs(imgX) > 200) {
+      slideRef.current.style.transform = `translateX(${imgX}px)`;
+    }
+  };
+  const resizeWidth = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeWidth);
+    return () => {
+      window.removeEventListener("resize", resizeWidth);
+    };
+  }, []);
+
+  useEffect(() => {
+    const autoPage = setTimeout(() => {
       setX(-56);
       setAuto((prev) => prev + 1);
       setIsSlide(true);
@@ -211,36 +258,35 @@ function Slider() {
         setIsSlide(false);
       }, 500);
     }, 5000);
-  };
-  const timer = () => {
-    if (isSlide) {
-      return;
-    }
-    autoPage();
-  };
-  const onDragStart = () => {
-    setIsClick(true);
-  };
-  const onDragEnd = () => {
-    setIsClick(false);
-  };
-  const onMouseMove = (event) => {
-    if (!isClick) {
-      return;
-    }
-    //console.log(event.pageX);
-    setMouseX(event.pageX);
-    //console.log(window.onmousemove);
-  };
-  console.log(isClick);
-  console.log(slideRef);
-  useEffect(() => {
-    timer();
+    return () => {
+      clearTimeout(autoPage);
+    };
   }, [auto]);
+  console.log(`브라우저 사이즈 : ${windowWidth}`);
   return (
     <Wrapper>
+      <LeftButton
+        style={{
+          left:
+            windowWidth > 1800
+              ? `18.5%`
+              : windowWidth > 1500
+              ? `10%`
+              : windowWidth > 1300
+              ? `5%`
+              : `0%`,
+          visibility: windowWidth < 1335 ? "hidden" : "visible",
+        }}
+        onClick={decreaseClick}
+      >
+        <i class="fas fa-chevron-left"></i>
+      </LeftButton>
       <Row
         key={index}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        onMouseMove={onMouseMove}
         ref={slideRef}
         style={{
           transform: `translateX(${x}vw)`,
@@ -248,25 +294,34 @@ function Slider() {
       >
         <Container>
           <PrivewImg
-            style={{ opacity: 0.5 }}
+            style={{
+              opacity: 0.5,
+              width: windowWidth > 1200 ? null : `80vw`,
+              height: windowWidth > 1200 ? null : `185px`,
+            }}
             src={WantedImg[morePrevImg]}
           ></PrivewImg>
         </Container>
         <Container>
           <PrivewImg
-            style={{ opacity: 0.5 }}
+            style={{
+              opacity: 0.5,
+              width: windowWidth > 1200 ? null : `80vw`,
+              height: windowWidth > 1200 ? null : `185px`,
+            }}
             src={WantedImg[PrevImg]}
           ></PrivewImg>
         </Container>
         <ImgWrapper>
           <Img
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-            onDrag={onMouseMove}
-            style={{ opacity: 1 }}
+            style={{
+              opacity: 1,
+              width: windowWidth > 1200 ? null : `80vw`,
+              height: windowWidth > 1200 ? null : `185px`,
+            }}
             src={WantedImg[index]}
           />
-          {!isSlide ? (
+          {!isSlide && windowWidth > 1200 ? (
             <ImgDes>
               <Title>{wantedTitle[index]}</Title>
               <Des>{wantedDes[index]}</Des>
@@ -275,24 +330,52 @@ function Slider() {
               </LinkSpan>
             </ImgDes>
           ) : null}
+          {!isSlide && windowWidth <= 1200 ? (
+            <MiniWrapper>
+              <MiniTitle>{wantedTitle[index]}</MiniTitle>
+              <MiniDes>{wantedDes[index]}</MiniDes>
+              <LinkSpan>
+                바로가기<i class="fas fa-chevron-right"></i>
+              </LinkSpan>
+            </MiniWrapper>
+          ) : null}
         </ImgWrapper>
         <Container>
           <PrivewImg
-            style={{ opacity: 0.5 }}
+            style={{
+              opacity: 0.5,
+              width: windowWidth > 1200 ? null : `80vw`,
+              height: windowWidth > 1200 ? null : `185px`,
+            }}
             src={WantedImg[NextImg]}
           ></PrivewImg>
         </Container>
         <Container>
           <PrivewImg
-            style={{ opacity: 0.5 }}
+            style={{
+              opacity: 0.5,
+              width: windowWidth > 1200 ? null : `80vw`,
+              height: windowWidth > 1200 ? null : `185px`,
+            }}
             src={WantedImg[moreNextImg]}
           ></PrivewImg>
         </Container>
       </Row>
-      <LeftButton onDragStart={decreaseClick}>
-        <i class="fas fa-chevron-left"></i>
-      </LeftButton>
-      <RightButton onClick={increaseClick}>
+
+      <RightButton
+        style={{
+          right:
+            windowWidth > 1800
+              ? `18.5%`
+              : windowWidth > 1500
+              ? `10%`
+              : windowWidth > 1200
+              ? `5%`
+              : `0%`,
+          visibility: windowWidth < 1335 ? "hidden" : "visible",
+        }}
+        onClick={increaseClick}
+      >
         <i class="fas fa-chevron-right"></i>
       </RightButton>
     </Wrapper>

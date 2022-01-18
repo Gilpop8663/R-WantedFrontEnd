@@ -59,6 +59,7 @@ body{
   font-family: 'Source Sans Pro', sans-serif;
   background-color: white;
   color:black;
+  min-width:500px;
 }
 `;
 
