@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
 const Animation = keyframes`
@@ -25,6 +25,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   margin: 0 12.5px;
+  cursor: pointer;
 `;
 
 const Row = styled.div`
@@ -41,6 +42,7 @@ const Img = styled.img`
   animation: ${Animation} 5s ease-in-out;
   margin: 0 12.5px;
   position: relative;
+  cursor: pointer;
   transition: all 1s linear;
 `;
 const PrivewImg = styled.img`
@@ -50,6 +52,7 @@ const PrivewImg = styled.img`
 
 const Button = styled.button`
   display: flex;
+  cursor: pointer;
   align-items: center;
   position: absolute;
   border: none;
@@ -103,6 +106,20 @@ const Des = styled.span`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
+const LinkSpan = styled.span`
+  padding-left: 20px;
+  padding-top: 16px;
+  color: #3366ff;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  i {
+    margin-left: 5px;
+  }
+`;
+
 const WantedImg = [
   "https://static.wanted.co.kr/images/banners/1489/312a0c29.jpg",
   "https://static.wanted.co.kr/images/banners/1486/fba2df30.jpg",
@@ -136,18 +153,24 @@ const wantedDes = [
   "Velog, 글 쓰는 개발자들의 이야기",
   "프론트엔드 무료 교육과정 참여하기",
   "디자이너의 포폴 살펴보기",
-  "디자이너의 포폴 살펴보기",
+  "브랜드 가치를 더하는 디자인",
 ];
+
+const delay = 2500;
 
 function Slider() {
   const [index, setIndex] = useState(0);
   const [isSlide, setIsSlide] = useState(false);
+  const [auto, setAuto] = useState(0);
+  const [isClick, setIsClick] = useState(false);
+  const [mouseX, setMouseX] = useState(0);
   const [x, setX] = useState(0);
   const slideRef = useRef(null);
   const increaseClick = async () => {
     if (isSlide) {
       return;
     }
+    clearTimeout(autoPage);
     setX(-56);
     setIsSlide(true);
     await setTimeout(() => {
@@ -161,9 +184,10 @@ function Slider() {
     if (isSlide) {
       return;
     }
+    clearTimeout(autoPage);
     setX(+56);
     setIsSlide(true);
-    setTimeout(() => {
+    await setTimeout(() => {
       setIndex((prev) => (prev === 0 ? 8 : prev - 1));
       setX(0);
       setIsSlide(false);
@@ -175,12 +199,52 @@ function Slider() {
   const moreNextImg = index === 8 ? 1 : index === 7 ? 0 : index + 2;
   //console.log(slideRef.current);
   //console.log(index);
+
+  const autoPage = () => {
+    setTimeout(() => {
+      setX(-56);
+      setAuto((prev) => prev + 1);
+      setIsSlide(true);
+      setTimeout(() => {
+        setIndex((prev) => (prev === 8 ? 0 : prev + 1));
+        setX(0);
+        setIsSlide(false);
+      }, 500);
+    }, 5000);
+  };
+  const timer = () => {
+    if (isSlide) {
+      return;
+    }
+    autoPage();
+  };
+  const onDragStart = () => {
+    setIsClick(true);
+  };
+  const onDragEnd = () => {
+    setIsClick(false);
+  };
+  const onMouseMove = (event) => {
+    if (!isClick) {
+      return;
+    }
+    //console.log(event.pageX);
+    setMouseX(event.pageX);
+    //console.log(window.onmousemove);
+  };
+  console.log(isClick);
+  console.log(slideRef);
+  useEffect(() => {
+    timer();
+  }, [auto]);
   return (
     <Wrapper>
       <Row
         key={index}
         ref={slideRef}
-        style={{ transform: `translateX(${x}vw)` }}
+        style={{
+          transform: `translateX(${x}vw)`,
+        }}
       >
         <Container>
           <PrivewImg
@@ -195,11 +259,20 @@ function Slider() {
           ></PrivewImg>
         </Container>
         <ImgWrapper>
-          <Img style={{ opacity: 1 }} src={WantedImg[index]} />
+          <Img
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDrag={onMouseMove}
+            style={{ opacity: 1 }}
+            src={WantedImg[index]}
+          />
           {!isSlide ? (
             <ImgDes>
               <Title>{wantedTitle[index]}</Title>
               <Des>{wantedDes[index]}</Des>
+              <LinkSpan>
+                바로가기<i class="fas fa-chevron-right"></i>
+              </LinkSpan>
             </ImgDes>
           ) : null}
         </ImgWrapper>
@@ -216,7 +289,7 @@ function Slider() {
           ></PrivewImg>
         </Container>
       </Row>
-      <LeftButton onClick={decreaseClick}>
+      <LeftButton onDragStart={decreaseClick}>
         <i class="fas fa-chevron-left"></i>
       </LeftButton>
       <RightButton onClick={increaseClick}>
