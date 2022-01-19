@@ -124,10 +124,14 @@ const MiniTitle = styled.span`
   font-weight: 600;
   margin-top: 22px;
   margin-bottom: 10px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.75);
 `;
 
 const MiniDes = styled.span`
   font-size: 14px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
 `;
 
 const WantedImg = [
@@ -261,7 +265,7 @@ function Slider() {
     return () => {
       clearTimeout(autoPage);
     };
-  }, [auto]);
+  }, [index, isClick]);
   console.log(`브라우저 사이즈 : ${windowWidth}`);
   return (
     <Wrapper>
@@ -269,7 +273,7 @@ function Slider() {
         style={{
           left:
             windowWidth > 1800
-              ? `18.5%`
+              ? `19%`
               : windowWidth > 1500
               ? `10%`
               : windowWidth > 1300
@@ -297,7 +301,12 @@ function Slider() {
             style={{
               opacity: 0.5,
               width: windowWidth > 1200 ? null : `80vw`,
-              height: windowWidth > 1200 ? null : `185px`,
+              height:
+                windowWidth > 1200
+                  ? null
+                  : windowWidth < 770
+                  ? "185px"
+                  : "250px",
             }}
             src={WantedImg[morePrevImg]}
           ></PrivewImg>
@@ -307,7 +316,12 @@ function Slider() {
             style={{
               opacity: 0.5,
               width: windowWidth > 1200 ? null : `80vw`,
-              height: windowWidth > 1200 ? null : `185px`,
+              height:
+                windowWidth > 1200
+                  ? null
+                  : windowWidth < 770
+                  ? "185px"
+                  : "250px",
             }}
             src={WantedImg[PrevImg]}
           ></PrivewImg>
@@ -317,7 +331,12 @@ function Slider() {
             style={{
               opacity: 1,
               width: windowWidth > 1200 ? null : `80vw`,
-              height: windowWidth > 1200 ? null : `185px`,
+              height:
+                windowWidth > 1200
+                  ? null
+                  : windowWidth < 770
+                  ? "185px"
+                  : "250px",
             }}
             src={WantedImg[index]}
           />
@@ -345,7 +364,12 @@ function Slider() {
             style={{
               opacity: 0.5,
               width: windowWidth > 1200 ? null : `80vw`,
-              height: windowWidth > 1200 ? null : `185px`,
+              height:
+                windowWidth > 1200
+                  ? null
+                  : windowWidth < 770
+                  ? "185px"
+                  : "250px",
             }}
             src={WantedImg[NextImg]}
           ></PrivewImg>
@@ -355,7 +379,12 @@ function Slider() {
             style={{
               opacity: 0.5,
               width: windowWidth > 1200 ? null : `80vw`,
-              height: windowWidth > 1200 ? null : `185px`,
+              height:
+                windowWidth > 1200
+                  ? null
+                  : windowWidth < 770
+                  ? "185px"
+                  : "250px",
             }}
             src={WantedImg[moreNextImg]}
           ></PrivewImg>
@@ -366,7 +395,7 @@ function Slider() {
         style={{
           right:
             windowWidth > 1800
-              ? `18.5%`
+              ? `19%`
               : windowWidth > 1500
               ? `10%`
               : windowWidth > 1200
