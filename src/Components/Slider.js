@@ -223,10 +223,12 @@ function Slider() {
   const onMouseUp = (event) => {
     setIsClick(false);
     const imgX = mouseDownClientX - mouseUpClientX;
-    console.log(imgX);
-    if (imgX < -200) {
+    // console.log(imgX);
+    if (imgX < -100) {
+      slideRef.current.style.transform = `translateX(${imgX}px)`;
       increaseClick();
-    } else if (imgX > 200) {
+    } else if (imgX > 100) {
+      slideRef.current.style.transform = `translateX(${imgX}px)`;
       decreaseClick();
     }
   };
@@ -235,8 +237,8 @@ function Slider() {
     event.preventDefault();
     setMouseUpClientX(event.pageX);
     const imgX = mouseDownClientX - mouseUpClientX;
-    if (Math.abs(imgX) > 200) {
-      slideRef.current.style.transform = `translateX(${imgX}px)`;
+    if (Math.abs(imgX) > 100) {
+      // slideRef.current.style.transform = `translateX(${imgX}px)`;
     }
   };
   const resizeWidth = () => {
@@ -271,7 +273,7 @@ function Slider() {
         style={{
           left:
             windowWidth > 1800
-              ? `19%`
+              ? `18.5%`
               : windowWidth > 1500
               ? `10%`
               : windowWidth > 1300
@@ -393,7 +395,7 @@ function Slider() {
         style={{
           right:
             windowWidth > 1800
-              ? `19%`
+              ? `18.5%`
               : windowWidth > 1500
               ? `10%`
               : windowWidth > 1200

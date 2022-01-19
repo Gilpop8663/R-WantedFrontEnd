@@ -20,8 +20,6 @@ const Container = styled.div`
 const Col = styled.div`
   display: flex;
   align-items: center;
-  &:first-child {
-  }
 `;
 
 const Items = styled.ul`
@@ -33,13 +31,15 @@ const Item = styled.li`
   cursor: pointer;
   margin-right: 30px;
   display: flex;
-
   align-items: center;
 `;
 
 const CategoryItem = styled(Item)`
   height: 54px;
   font-weight: 600;
+  text-align: center;
+  justify-content: center;
+  position: relative;
   &:hover {
     border-bottom: 2px solid rgba(0, 0, 0, 0.2);
   }
@@ -127,12 +127,17 @@ function Header() {
           paddingTop: windowWidth < 1100 ? "22px" : "0",
         }}
       >
-        <Col style={{ marginBottom: windowWidth < 1100 ? "10px" : "0" }}>
+        <Col
+          style={{
+            marginRight: "90px",
+            marginBottom: windowWidth < 1100 ? "10px" : "0",
+          }}
+        >
           <Items>
             <Logo>
               <i class="fas fa-bars"></i>
             </Logo>
-            <Item>
+            <Item style={{ borderBottom: "none" }}>
               <Img src="https://user-images.githubusercontent.com/80146176/149613970-189b38f8-d157-45dd-bfc8-606c82dc0f65.png"></Img>
             </Item>
           </Items>
@@ -147,13 +152,11 @@ function Header() {
           <Col>
             {windowWidth > 770 ? (
               <Items>
-                <CategoryItem windowWidth={windowWidth}>채용</CategoryItem>
-                <CategoryItem windowWidth={windowWidth}>이벤트</CategoryItem>
-                <CategoryItem windowWidth={windowWidth}>
-                  직군별 연봉
-                </CategoryItem>
-                <CategoryItem windowWidth={windowWidth}>이력서</CategoryItem>
-                <CategoryItem windowWidth={windowWidth}>
+                <CategoryItem>채용</CategoryItem>
+                <CategoryItem>이벤트</CategoryItem>
+                <CategoryItem>직군별 연봉</CategoryItem>
+                <CategoryItem>이력서</CategoryItem>
+                <CategoryItem>
                   커뮤니티<SubSpan>New</SubSpan>
                 </CategoryItem>
                 <CategoryItem>프리랜서</CategoryItem>
