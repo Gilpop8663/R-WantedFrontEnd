@@ -1,6 +1,6 @@
 ## 배포 페이지
 
-<a href="https://fervent-hugle-5ea8ae.netlify.app/">배포 페이지</a>
+<a target="_blank" href="https://fervent-hugle-5ea8ae.netlify.app/">배포 페이지</a>
 
 
 ## 원티드 프리온보딩 코스
