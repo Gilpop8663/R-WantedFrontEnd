@@ -173,7 +173,6 @@ const wantedDes = [
 function Slider() {
   const [index, setIndex] = useState(0);
   const [isSlide, setIsSlide] = useState(false);
-  const [auto, setAuto] = useState(0);
   const [isClick, setIsClick] = useState(false);
   const [mouseDownClientX, setMouseDownClientX] = useState(0);
   const [mouseUpClientX, setMouseUpClientX] = useState(0);
@@ -254,7 +253,6 @@ function Slider() {
   useEffect(() => {
     const autoPage = setTimeout(() => {
       setX(-56);
-      setAuto((prev) => prev + 1);
       setIsSlide(true);
       setTimeout(() => {
         setIndex((prev) => (prev === 8 ? 0 : prev + 1));
