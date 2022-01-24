@@ -171,14 +171,19 @@ const wantedDes = [
 ];
 
 function Slider() {
-  const [index, setIndex] = useState(0);
-  const [isSlide, setIsSlide] = useState(false);
-  const [isClick, setIsClick] = useState(false);
-  const [mouseDownClientX, setMouseDownClientX] = useState(0);
-  const [mouseUpClientX, setMouseUpClientX] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [x, setX] = useState(0);
+  //슬라이드
   const slideRef = useRef(null);
+  const [index, setIndex] = useState(0); // 인덱스를 만들어줍니다.
+  const [isSlide, setIsSlide] = useState(false); // 슬라이드 중인지 체크해줍니다. 슬라이드 중에 여러번 빠르게 클릭 못하게 하는 역할
+  const [x, setX] = useState(0); // css에서 슬라이드 애니메이션 효과를 주기위해 x만큼 이동시키는 역할입니다.
+
+  //드래그로 슬라이드 넘기기
+  const [isClick, setIsClick] = useState(false); // 드래그를 시작하는지 체크해줍니다.
+  const [mouseDownClientX, setMouseDownClientX] = useState(0); // 마우스를 클릭한 지점의 x 좌료를 저장합니다
+  const [mouseUpClientX, setMouseUpClientX] = useState(0); // 마우스를 땐 지점의 x 좌표를 저장합니다.
+
+  //반응형 사이트
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // 사용자의 화면크기 정보를 받아 반응형 사이트에 사용합니다.
 
   const increaseClick = async () => {
     if (isSlide) {
