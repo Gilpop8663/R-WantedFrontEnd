@@ -181,6 +181,7 @@ function Slider() {
   const [isClick, setIsClick] = useState(false); // 드래그를 시작하는지 체크해줍니다.
   const [mouseDownClientX, setMouseDownClientX] = useState(0); // 마우스를 클릭한 지점의 x 좌료를 저장합니다
   const [mouseUpClientX, setMouseUpClientX] = useState(0); // 마우스를 땐 지점의 x 좌표를 저장합니다.
+  const [test, setTest] = useState(0);
 
   //반응형 사이트
   const [windowWidth, setWindowWidth] = useState(window.innerWidth); // 사용자의 화면크기 정보를 받아 반응형 사이트에 사용합니다.
